@@ -1,4 +1,6 @@
 phpunit.xml
 vendor/
 .idea/
-.phpunit.result.cache
+build/
+doc/
+*.cache

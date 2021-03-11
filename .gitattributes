@@ -1,0 +1,23 @@
+* text=auto
+
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.png binary
+*.ttf binary
+*.zip binary
+
+# Ignore all test and documentation with "export-ignore".
+# When composer installs your package with (that is with --prefer-dist) it will pull down a zip
+# file from github or whatever cvs you're using, and extract it. You can exclude files and folders
+# to be included in that zip file by adding a line /some/file export-ignore.
+/.editorconfig               export-ignore
+/.gitattributes              export-ignore
+/.gitignore                  export-ignore
+/php_cs.dist                 export-ignore
+/phpunit.xml.dist            export-ignore
+/tests                       export-ignore
+/docker                      export-ignore
+./Dockerfile                 export-ignore
+./Makefile                   export-ignore
+./sami.phar                  export-ignore

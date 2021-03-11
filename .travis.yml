@@ -18,7 +18,6 @@ matrix:
 before_script:
   - composer self-update
   - echo "memory_limit=3G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini  
-  - echo "xdebug.mode=coverage" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 install: composer install
 

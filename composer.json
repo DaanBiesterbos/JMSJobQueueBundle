@@ -50,10 +50,17 @@
             "JMS\\JobQueueTests\\": "tests"
         }
     },
-    "target-dir": "JMS/JobQueueBundle",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        }
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ],
+        "test:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "vendor/bin/phpunit --coverage-clover=\".coverage/clover.xml\""
+        ],
+        "test:coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "vendor/bin/phpunit --coverage-html=\".coverage/code-coverage\""
+        ]
     }
 }

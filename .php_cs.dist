@@ -1,0 +1,62 @@
+<?php
+$rootDir = realpath(__DIR__);
+
+$finder = PhpCsFixer\Finder::create()
+    ->in($rootDir)
+    ->exclude(['vendor', 'bin', 'doc', 'var'])
+;
+
+$fileHeaderComment = <<<COMMENT
+This is a fork of the JMSQueueBundle.
+See LICENSE file for license information.
+
+Issues can be submitted here:
+https://github.com/daanbiesterbos/JMSJobQueueBundle/issues
+
+@author Johannes M. Schmitt (author original bundle)
+@author Daan Biesterbos     (fork maintainer)
+COMMENT;
+
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@Symfony' => true,
+        '@Symfony:risky' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
+        'linebreak_after_opening_tag' => true,
+        'mb_str_functions' => true,
+        'no_php4_constructor' => true,
+        'self_accessor' => false,
+        'no_superfluous_phpdoc_tags' => false,
+        'no_unreachable_default_argument_value' => true,
+        'native_function_invocation' => false,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'ordered_imports' => true,
+        'php_unit_strict' => true,
+        'phpdoc_order' => true,
+        'semicolon_after_instruction' => true,
+        'strict_comparison' => true,
+        'strict_param' => true,
+        'ordered_class_elements' =>  [
+                    'use_trait', 'public', 'protected', 'private',
+                    'constant', 'constant_public', 'constant_protected', 'constant_private',
+                    'property_public_static',  'property_protected_static', 'property_private_static',
+                    'property_public', 'property_protected', 'property_private',
+                    'construct',
+                    'magic',
+                    'method_public_static',
+                    'method_public',
+                    'method_protected_static',
+                    'method_protected',
+                    'method_private_static',
+                    'method_private',
+                    'destruct'
+        ],
+
+    ])
+    ->setFinder($finder)
+    ->setCacheFile($rootDir.'/.php_cs.cache')
+;

@@ -1,0 +1,68 @@
+<?php
+
+/*
+ * This is a fork of the JMSQueueBundle.
+ * See LICENSE file for license information.
+ *
+ * Issues can be submitted here:
+ * https://github.com/daanbiesterbos/JMSJobQueueBundle/issues
+ *
+ * @author Johannes M. Schmitt (author original bundle)
+ * @author Daan Biesterbos     (fork maintainer)
+ */
+
+namespace JMS\JobQueueBundle\Command;
+
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
+use JMS\JobQueueBundle\Entity\Job;
+use JMS\JobQueueBundle\Entity\Repository\JobManager;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class MarkJobIncompleteCommand extends Command
+{
+    protected static $defaultName = 'jms-job-queue:mark-incomplete';
+
+    private $registry;
+    private $jobManager;
+
+    public function __construct(Registry $managerRegistry, JobManager $jobManager)
+    {
+        parent::__construct();
+
+        $this->registry = $managerRegistry;
+        $this->jobManager = $jobManager;
+    }
+
+    protected function configure()
+    {
+        $this
+            ->setDescription('Internal command (do not use). It marks jobs as incomplete.')
+            ->addArgument('job-id', InputArgument::REQUIRED, 'The ID of the Job.')
+        ;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        /** @var EntityManager $em */
+        $em = $this->registry->getManagerForClass(Job::class);
+
+        /** @var Job|null $job */
+        $job = $em->createQuery('SELECT j FROM '.Job::class.' j WHERE j.id = :id')
+            ->setParameter('id', $input->getArgument('job-id'))
+            ->getOneOrNullResult();
+
+        if (null === $job) {
+            $output->writeln('<error>Job was not found.</error>');
+
+            return 1;
+        }
+
+        $this->jobManager->closeJob($job, Job::STATE_INCOMPLETE);
+
+        return 0;
+    }
+}

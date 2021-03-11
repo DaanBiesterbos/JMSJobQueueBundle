@@ -1,0 +1,29 @@
+# editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[Makefile]
+charset = utf-8
+indent_style = tab
+trim_trailing_whitespace = true
+
+[Make.Config]
+charset = utf-8
+indent_style = tab
+trim_trailing_whitespace = true
+
+[*.php]
+indent_size = 4
+
+[*.yml]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false

@@ -307,7 +307,7 @@ OUTPUT
 
 class MemoryOutput extends Output
 {
-    private $output;
+    private $output = '';
 
     protected function doWrite($message, $newline)
     {
@@ -318,7 +318,7 @@ class MemoryOutput extends Output
         }
     }
 
-    public function getOutput()
+    public function getOutput(): string
     {
         return $this->output;
     }

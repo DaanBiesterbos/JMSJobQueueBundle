@@ -4,11 +4,25 @@ on:
         branches: [ master, develop, main ]
     pull_request:
         branches: [ master, develop, main ]
+
 jobs:
     build:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: ['7.3', '7.4']
         steps:
-            - uses: actions/checkout@v2
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  #extensions: intl
+                  ini-values: "post_max_size=256M" #optional
+            - name: Check PHP Version
+              run: php -v
 
             - name: Validate composer.json and composer.lock
               run: composer validate --strict

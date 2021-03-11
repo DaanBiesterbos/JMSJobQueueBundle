@@ -84,7 +84,7 @@ CONFIG
 
         foreach ($this->processes as $process) {
             if ( ! $process->isRunning()) {
-                throw new\ RuntimeException(sprintf('The process "%s" exited prematurely:'."\n\n%s\n\n%s", $process->getCommandLine(), $process->getOutput(), $process->getErrorOutput()));
+                throw new \RuntimeException(sprintf('The process "%s" exited prematurely:'."\n\n%s\n\n%s", $process->getCommandLine(), $process->getOutput(), $process->getErrorOutput()));
             }
 
             $process->stop(5);

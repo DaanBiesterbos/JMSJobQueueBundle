@@ -22,7 +22,7 @@ return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
-        '@Symfony:risky' => true,
+        '@Symfony:risky' => false,
         'array_syntax' => ['syntax' => 'short'],
         'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
         'linebreak_after_opening_tag' => true,

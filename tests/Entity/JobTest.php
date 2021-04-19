@@ -1,19 +1,14 @@
 <?php
 
 /*
- * Copyright 2012 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * This is a fork of the JMSQueueBundle.
+ * See LICENSE file for license information.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Issues can be submitted here:
+ * https://github.com/daanbiesterbos/JMSJobQueueBundle/issues
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author Johannes M. Schmitt (author original bundle)
+ * @author Daan Biesterbos     (fork maintainer)
  */
 
 namespace JMS\JobQueueTests\Entity;
@@ -26,12 +21,12 @@ class JobTest extends TestCase
 {
     public function testConstruct()
     {
-        $job = new Job('a:b', array('a', 'b', 'c'));
+        $job = new Job('a:b', ['a', 'b', 'c']);
 
-        $this->assertEquals('a:b', $job->getCommand());
-        $this->assertEquals(array('a', 'b', 'c'), $job->getArgs());
+        $this->assertSame('a:b', $job->getCommand());
+        $this->assertSame(['a', 'b', 'c'], $job->getArgs());
         $this->assertNotNull($job->getCreatedAt());
-        $this->assertEquals('pending', $job->getState());
+        $this->assertSame('pending', $job->getState());
         $this->assertNull($job->getStartedAt());
 
         return $job;
@@ -52,7 +47,7 @@ class JobTest extends TestCase
     public function testStateToRunning(Job $job)
     {
         $job->setState('running');
-        $this->assertEquals('running', $job->getState());
+        $this->assertSame('running', $job->getState());
         $this->assertNotNull($startedAt = $job->getStartedAt());
         $job->setState('running');
         $this->assertSame($startedAt, $job->getStartedAt());
@@ -68,7 +63,7 @@ class JobTest extends TestCase
         $job = clone $job;
         $job->setState('running');
         $job->setState('failed');
-        $this->assertEquals('failed', $job->getState());
+        $this->assertSame('failed', $job->getState());
     }
 
     /**
@@ -79,7 +74,7 @@ class JobTest extends TestCase
         $job = clone $job;
         $job->setState('running');
         $job->setState('terminated');
-        $this->assertEquals('terminated', $job->getState());
+        $this->assertSame('terminated', $job->getState());
     }
 
     /**
@@ -90,7 +85,7 @@ class JobTest extends TestCase
         $job = clone $job;
         $job->setState('running');
         $job->setState('finished');
-        $this->assertEquals('finished', $job->getState());
+        $this->assertSame('finished', $job->getState());
     }
 
     public function testAddOutput()
@@ -98,9 +93,9 @@ class JobTest extends TestCase
         $job = new Job('foo');
         $this->assertNull($job->getOutput());
         $job->addOutput('foo');
-        $this->assertEquals('foo', $job->getOutput());
+        $this->assertSame('foo', $job->getOutput());
         $job->addOutput('bar');
-        $this->assertEquals('foobar', $job->getOutput());
+        $this->assertSame('foobar', $job->getOutput());
     }
 
     public function testAddErrorOutput()
@@ -108,9 +103,9 @@ class JobTest extends TestCase
         $job = new Job('foo');
         $this->assertNull($job->getErrorOutput());
         $job->addErrorOutput('foo');
-        $this->assertEquals('foo', $job->getErrorOutput());
+        $this->assertSame('foo', $job->getErrorOutput());
         $job->addErrorOutput('bar');
-        $this->assertEquals('foobar', $job->getErrorOutput());
+        $this->assertSame('foobar', $job->getErrorOutput());
     }
 
     public function testSetOutput()
@@ -118,9 +113,9 @@ class JobTest extends TestCase
         $job = new Job('foo');
         $this->assertNull($job->getOutput());
         $job->setOutput('foo');
-        $this->assertEquals('foo', $job->getOutput());
+        $this->assertSame('foo', $job->getOutput());
         $job->setOutput('bar');
-        $this->assertEquals('bar', $job->getOutput());
+        $this->assertSame('bar', $job->getOutput());
     }
 
     public function testSetErrorOutput()
@@ -128,9 +123,9 @@ class JobTest extends TestCase
         $job = new Job('foo');
         $this->assertNull($job->getErrorOutput());
         $job->setErrorOutput('foo');
-        $this->assertEquals('foo', $job->getErrorOutput());
+        $this->assertSame('foo', $job->getErrorOutput());
         $job->setErrorOutput('bar');
-        $this->assertEquals('bar', $job->getErrorOutput());
+        $this->assertSame('bar', $job->getErrorOutput());
     }
 
     public function testAddDependency()
@@ -238,10 +233,10 @@ class JobTest extends TestCase
 
     public function testCloneDoesNotChangeQueue()
     {
-        $job = new Job('a', array(), true, 'foo');
+        $job = new Job('a', [], true, 'foo');
         $clonedJob = clone $job;
 
-        $this->assertEquals('foo', $clonedJob->getQueue());
+        $this->assertSame('foo', $clonedJob->getQueue());
     }
 
     private function setField($obj, $field, $value)

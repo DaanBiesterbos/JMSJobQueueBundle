@@ -32,7 +32,8 @@
         "symfony/browser-kit": "^4.4",
         "symfony/finder": "^4.4",
         "symfony/css-selector": "^4.4",
-        "phpunit/phpunit": "^7|^8"
+        "phpunit/phpunit": "^7|^8",
+        "friendsofphp/php-cs-fixer": "^2.18"
     },
     "replace": {
         "jms/job-queue-bundle": "^2.1"
@@ -50,10 +51,17 @@
             "JMS\\JobQueueTests\\": "tests"
         }
     },
-    "target-dir": "JMS/JobQueueBundle",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        }
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ],
+        "test:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "vendor/bin/phpunit --coverage-clover=\".coverage/clover.xml\""
+        ],
+        "test:coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "vendor/bin/phpunit --coverage-html=\".coverage/code-coverage\""
+        ]
     }
 }

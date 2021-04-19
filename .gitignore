@@ -3,4 +3,5 @@ vendor/
 .idea/
 build/
 doc/
+.coverage/
 *.cache

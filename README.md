@@ -40,8 +40,7 @@ cp bin/console bin/job-queue
 vim bin/job-queue
 ```
 
-
-**Note that this is part of the original bundle. I would prefer a better solution that does not require an extra console. However, for now backward compatibility is more important considering the purpose of the fork.**
+Note that this is part of the original bundle. I would prefer a better solution that does not require an extra console. However, for now backward compatibility is more important considering the purpose of the fork.
 
 
 # Usage

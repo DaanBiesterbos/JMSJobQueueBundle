@@ -16,7 +16,7 @@ $iterator = Finder::create()
 return new Sami($iterator, array(
     'theme'  => 'default',
     //'versions'  => $versions,
-    'title'  => 'IQMatch SeoBundle',
+    'title'  => 'Job Queue Bundle',
     'build_dir'  =>'/build/doc/api/%version%',
     'cache_dir'  => '/build/doc/cache/%version%',
     'default_opened_level' => 2,

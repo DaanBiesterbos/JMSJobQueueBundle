@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This is a fork of the JMSQueueBundle.
+ * See LICENSE file for license information.
+ *
+ * Issues can be submitted here:
+ * https://github.com/daanbiesterbos/JMSJobQueueBundle/issues
+ *
+ * @author Johannes M. Schmitt (author original bundle)
+ * @author Daan Biesterbos     (fork maintainer)
+ */
+
 namespace JMS\JobQueueTests\Functional;
 
 use Doctrine\ORM\EntityManager;
@@ -9,7 +20,7 @@ use Symfony\Component\Process\Process;
 class ConcurrencyTest extends BaseTestCase
 {
     /** @var Process[] */
-    private $processes = array();
+    private $processes = [];
 
     private $configFile;
     private $databaseFile;
@@ -25,9 +36,9 @@ class ConcurrencyTest extends BaseTestCase
         $em = self::$kernel->getContainer()->get('doctrine')->getManager();
 
         /** @var Job[] $jobs */
-        $jobs = array();
-        for ($i=0; $i<5; $i++) {
-            $jobs[] = $job = new Job('jms-job-queue:logging-cmd', array('Job-'.$i, $filename, '--runtime=1'));
+        $jobs = [];
+        for ($i = 0; $i < 5; ++$i) {
+            $jobs[] = $job = new Job('jms-job-queue:logging-cmd', ['Job-'.$i, $filename, '--runtime=1']);
             $em->persist($job);
         }
         $em->flush();
@@ -37,11 +48,11 @@ class ConcurrencyTest extends BaseTestCase
         $logOutput = file_get_contents($filename);
         unlink($filename);
 
-        for ($i=0; $i<5; $i++) {
-            $this->assertSame(2, substr_count($logOutput, 'Job-'.$i));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertSame(2, mb_substr_count($logOutput, 'Job-'.$i));
         }
 
-        $workers = array();
+        $workers = [];
         foreach ($jobs as $job) {
             $em->refresh($job);
             $workers[] = $job->getWorkerName();
@@ -50,7 +61,7 @@ class ConcurrencyTest extends BaseTestCase
         $workers = array_unique($workers);
         sort($workers);
 
-        $this->assertEquals(array('one', 'two'), $workers);
+        $this->assertSame(['one', 'two'], $workers);
     }
 
     protected function setUp(): void
@@ -71,7 +82,7 @@ parameters:
 CONFIG
         );
 
-        self::$kernel = self::createKernel(array('config' => $this->configFile));
+        self::$kernel = self::createKernel(['config' => $this->configFile]);
         self::$kernel->boot();
 
         $this->importDatabaseSchema();
@@ -83,7 +94,7 @@ CONFIG
         @unlink($this->configFile);
 
         foreach ($this->processes as $process) {
-            if ( ! $process->isRunning()) {
+            if (!$process->isRunning()) {
                 throw new \RuntimeException(sprintf('The process "%s" exited prematurely:'."\n\n%s\n\n%s", $process->getCommandLine(), $process->getOutput(), $process->getErrorOutput()));
             }
 
@@ -100,14 +111,14 @@ CONFIG
             /** @var EntityManager $em */
             $em = self::$kernel->getContainer()->get('doctrine')->getManager();
 
-            $jobCount = $em->createQuery("SELECT COUNT(j) FROM ".Job::class." j WHERE j.state IN (:nonFinalStates)")
-                ->setParameter('nonFinalStates', array(Job::STATE_RUNNING, Job::STATE_NEW, Job::STATE_PENDING))
+            $jobCount = $em->createQuery('SELECT COUNT(j) FROM '.Job::class.' j WHERE j.state IN (:nonFinalStates)')
+                ->setParameter('nonFinalStates', [Job::STATE_RUNNING, Job::STATE_NEW, Job::STATE_PENDING])
                 ->getSingleScalarResult();
         } while ($jobCount > 0 && time() - $start < $maxRuntime);
 
         if ($jobCount > 0) {
-            $jobs = $em->createQuery("SELECT j FROM ".Job::class." j WHERE j.state IN (:nonFinalStates)")
-                ->setParameter('nonFinalStates', array(Job::STATE_RUNNING, Job::STATE_NEW, Job::STATE_PENDING))
+            $jobs = $em->createQuery('SELECT j FROM '.Job::class.' j WHERE j.state IN (:nonFinalStates)')
+                ->setParameter('nonFinalStates', [Job::STATE_RUNNING, Job::STATE_NEW, Job::STATE_PENDING])
                 ->getResult();
 
             throw new \RuntimeException('Not all jobs were processed: '."\n\n".implode("\n\n", $jobs));
@@ -116,19 +127,14 @@ CONFIG
 
     private function startWorker($name)
     {
-        $proc = new Process('exec '.PHP_BINARY.' '.escapeshellarg(__DIR__.'/console').' jms-job-queue:run --worker-name='.$name, null, array(
+        $proc = new Process('exec '.PHP_BINARY.' '.escapeshellarg(__DIR__.'/console').' jms-job-queue:run --worker-name='.$name, null, [
             'SYMFONY_CONFIG' => $this->configFile,
-        ));
+        ]);
         $proc->start();
 
         sleep(2);
-        if ( ! $proc->isRunning()) {
-            throw new \RuntimeException(sprintf(
-                "Process '%s' failed to start:\n\n%s\n\n%s",
-                $proc->getCommandLine(),
-                $proc->getOutput(),
-                $proc->getErrorOutput()
-            ));
+        if (!$proc->isRunning()) {
+            throw new \RuntimeException(sprintf("Process '%s' failed to start:\n\n%s\n\n%s", $proc->getCommandLine(), $proc->getOutput(), $proc->getErrorOutput()));
         }
 
         $this->processes[] = $proc;

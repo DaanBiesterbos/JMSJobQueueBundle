@@ -40,7 +40,7 @@ class ManyToAnyListener
         $this->ref->setAccessible(true);
     }
 
-    public function postLoad(\Doctrine\ORM\Event\LifecycleEventArgs $event)
+    public function postLoad(LifecycleEventArgs $event)
     {
         $entity = $event->getEntity();
         if (!$entity instanceof \JMS\JobQueueBundle\Entity\Job) {
@@ -63,7 +63,7 @@ class ManyToAnyListener
         ]);
     }
 
-    public function postPersist(\Doctrine\ORM\Event\LifecycleEventArgs $event)
+    public function postPersist(LifecycleEventArgs $event)
     {
         $entity = $event->getEntity();
         if (!$entity instanceof \JMS\JobQueueBundle\Entity\Job) {
